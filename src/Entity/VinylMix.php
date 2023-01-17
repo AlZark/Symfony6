@@ -26,8 +26,19 @@ class VinylMix
     #[ORM\Column(length: 255)]
     private ?string $genre = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAd = null;
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
+    private int $votes = 0;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -82,15 +93,56 @@ class VinylMix
         return $this;
     }
 
-    public function getCreatedAd(): ?\DateTimeImmutable
+    public function getDescription(): ?string
     {
-        return $this->createdAd;
+        return $this->description;
     }
 
-    public function setCreatedAd(\DateTimeImmutable $createdAd): self
+    public function setDescription(?string $description): self
     {
-        $this->createdAd = $createdAd;
+        $this->description = $description;
 
         return $this;
     }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getVotes(): ?int
+    {
+        return $this->votes;
+    }
+
+    public function setVotes(int $votes): self
+    {
+        $this->votes = $votes;
+
+        return $this;
+    }
+
+    public function getVotesString(): string
+    {
+        $prefix = ($this->votes === 0) ? '' : (($this->votes >= 0) ? '+' : '-');
+
+        return  sprintf('%s %d', $prefix, abs($this->votes));
+    }
+
+    public function getImageUrl(int $width): string
+    {
+        return sprintf(
+            'https://picsum.photos/id/%d/%d',
+            ($this->getId() + 50) % 1000, // number between 0 and 1000, based on the id
+            $width
+        );
+    }
+
 }
